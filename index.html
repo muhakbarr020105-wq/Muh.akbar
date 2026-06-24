@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AkademikAP · Sistem Informasi Akademik Kampus</title>
+  <meta name="description" content="Sistem Informasi Akademik kampus: multi-peran (admin, dosen, mahasiswa), data master, jadwal, presensi, KRS, nilai, IPK, KHS, transkrip, keuangan, pengumuman & kalender akademik.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ============ LOGIN ============ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-logo">🎓</div>
+      <div class="login-title">AkademikAP</div>
+      <div class="login-sub">Sistem Informasi Akademik · Administrasi Perkantoran PNUP</div>
+    </div>
+    <div class="role-tabs" id="role-tabs">
+      <button type="button" class="role-tab active" data-role="admin" onclick="selectLoginRole('admin')">🛡️ Admin</button>
+      <button type="button" class="role-tab" data-role="dosen" onclick="selectLoginRole('dosen')">🧑‍🏫 Dosen</button>
+      <button type="button" class="role-tab" data-role="mahasiswa" onclick="selectLoginRole('mahasiswa')">🎓 Mahasiswa</button>
+    </div>
+    <form id="login-form" onsubmit="return handleLogin(event)">
+      <div class="login-field form-group">
+        <label class="form-label">Nama Pengguna <span class="req">*</span></label>
+        <input type="text" id="login-user" class="form-input" placeholder="Masukkan username" autocomplete="username" required>
+      </div>
+      <div class="login-field form-group">
+        <label class="form-label">Kata Sandi <span class="req">*</span></label>
+        <input type="password" id="login-pass" class="form-input" placeholder="Masukkan password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:6px;">Masuk ke Portal</button>
+    </form>
+    <div class="login-hint-box" id="login-hint">
+      Akun demo Admin — <code>admin</code> / <code>admin123</code>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div class="app-shell" id="app-shell">
+
+<button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<div class="app-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-badge">
+        <div class="logo-icon">🎓</div>
+        <div class="logo-text">AkademikAP</div>
+      </div>
+      <div class="sidebar-tagline">Sistem Informasi Akademik Kampus</div>
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <div class="nav-section-label" data-roles="admin,dosen,mahasiswa">Menu Utama</div>
+      <a class="nav-item active" data-page="dashboard"  data-roles="admin,dosen,mahasiswa"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a class="nav-item" data-page="pengumuman" data-roles="admin,dosen,mahasiswa"><span class="nav-icon">📢</span> Pengumuman</a>
+      <a class="nav-item" data-page="kalender"   data-roles="admin,dosen,mahasiswa"><span class="nav-icon">🗓️</span> Kalender Akademik</a>
+
+      <div class="nav-section-label" data-roles="admin,dosen,mahasiswa">Akademik</div>
+      <a class="nav-item" data-page="jadwal"   data-roles="admin,dosen,mahasiswa"><span class="nav-icon">📅</span> Jadwal Kuliah</a>
+      <a class="nav-item" data-page="krs"      data-roles="admin,mahasiswa"><span class="nav-icon">📝</span> KRS</a>
+      <a class="nav-item" data-page="presensi" data-roles="admin,dosen,mahasiswa"><span class="nav-icon">✅</span> Presensi</a>
+      <a class="nav-item" data-page="nilai"    data-roles="admin,dosen"><span class="nav-icon">✍️</span> Input Nilai</a>
+      <a class="nav-item" data-page="rapor"    data-roles="admin,dosen,mahasiswa"><span class="nav-icon">📋</span> Rapor &amp; KHS</a>
+      <a class="nav-item" data-page="transkrip" data-roles="admin,dosen,mahasiswa"><span class="nav-icon">📜</span> Transkrip</a>
+
+      <div class="nav-section-label" data-roles="admin">Data Master</div>
+      <a class="nav-item" data-page="mahasiswa" data-roles="admin"><span class="nav-icon">🎓</span> Mahasiswa <span class="nav-badge" id="badge-mahasiswa">0</span></a>
+      <a class="nav-item" data-page="dosen"     data-roles="admin"><span class="nav-icon">🧑‍🏫</span> Dosen <span class="nav-badge" id="badge-dosen">0</span></a>
+      <a class="nav-item" data-page="staf"      data-roles="admin"><span class="nav-icon">👥</span> Staf <span class="nav-badge" id="badge-staf">0</span></a>
+      <a class="nav-item" data-page="matkul"    data-roles="admin"><span class="nav-icon">📚</span> Mata Kuliah <span class="nav-badge" id="badge-matkul">0</span></a>
+      <a class="nav-item" data-page="kelas"     data-roles="admin"><span class="nav-icon">🏫</span> Kelas <span class="nav-badge" id="badge-kelas">0</span></a>
+      <a class="nav-item" data-page="ruangan"   data-roles="admin"><span class="nav-icon">🚪</span> Ruangan <span class="nav-badge" id="badge-ruangan">0</span></a>
+
+      <div class="nav-section-label" data-roles="admin,mahasiswa">Administrasi</div>
+      <a class="nav-item" data-page="keuangan" data-roles="admin,mahasiswa"><span class="nav-icon">💳</span> Keuangan</a>
+      <a class="nav-item" data-page="tahunakademik" data-roles="admin"><span class="nav-icon">🗂️</span> Tahun Akademik</a>
+
+      <div class="nav-section-label" data-roles="admin,dosen,mahasiswa">Sistem</div>
+      <a class="nav-item" data-page="profil"     data-roles="admin,dosen,mahasiswa"><span class="nav-icon">👤</span> Profil Saya</a>
+      <a class="nav-item" data-page="pengaturan" data-roles="admin"><span class="nav-icon">⚙️</span> Pengaturan</a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-ghost btn-sm btn-block theme-toggle" onclick="toggleTheme()">🌙 Mode Gelap</button>
+      <div class="user-card">
+        <div class="user-avatar" id="user-avatar">A</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">Administrator</div>
+          <div class="user-role" id="user-role">Administrator</div>
+        </div>
+        <button class="btn-logout" onclick="handleLogout()" title="Keluar">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-sub" id="topbar-sub">Ringkasan data akademik</div>
+      </div>
+      <div class="topbar-actions">
+        <span class="ta-pill" id="ta-pill" title="Tahun akademik aktif">🗓️ <span id="ta-pill-text">—</span></span>
+        <span class="storage-pill" id="storage-pill"><span class="dot"></span> <span id="storage-pill-text">Mode Lokal</span></span>
+        <button class="btn-icon" onclick="toggleTheme()" id="theme-btn-top" title="Ganti tema">🌙</button>
+        <button class="btn-icon" onclick="refreshData()" title="Muat ulang data">🔄</button>
+      </div>
+    </header>
+
+    <!-- Generic content host pages -->
+    <div class="page active" id="page-dashboard"><div id="dashboard-content"></div></div>
+    <div class="page" id="page-pengumuman"><section class="section"><div id="pengumuman-content"></div></section></div>
+    <div class="page" id="page-kalender"><section class="section"><div id="kalender-content"></div></section></div>
+    <div class="page" id="page-jadwal"><section class="section"><div id="jadwal-content"></div></section></div>
+    <div class="page" id="page-krs"><section class="section"><div id="krs-content"></div></section></div>
+    <div class="page" id="page-presensi"><section class="section"><div id="presensi-content"></div></section></div>
+    <div class="page" id="page-nilai"><section class="section"><div class="section-header"><div class="section-eyebrow">Akademik</div><h2 class="section-title">Input Nilai</h2><p class="section-sub">Input nilai per komponen (Tugas, Praktik, UTS, UAS, Absen) dengan konversi otomatis ke nilai huruf dan bobot IP</p></div><div id="nilai-content"></div></section></div>
+    <div class="page" id="page-rapor"><section class="section"><div class="section-header"><div class="section-eyebrow">Akademik</div><h2 class="section-title">Rapor &amp; KHS</h2><p class="section-sub">IPS per semester, IPK kumulatif (berbobot SKS), status, dan cetak Kartu Hasil Studi</p></div><div id="rapor-content"></div></section></div>
+    <div class="page" id="page-transkrip"><section class="section"><div id="transkrip-content"></div></section></div>
+    <div class="page" id="page-mahasiswa"><section class="section"><div class="section-header"><div class="section-eyebrow">Data Master</div><h2 class="section-title">Data Mahasiswa</h2><p class="section-sub">Kelola data induk mahasiswa beserta biodata lengkap</p></div><div id="mahasiswa-content"></div></section></div>
+    <div class="page" id="page-dosen"><section class="section"><div class="section-header"><div class="section-eyebrow">Data Master</div><h2 class="section-title">Data Dosen</h2><p class="section-sub">Kelola data induk dosen pengajar</p></div><div id="dosen-content"></div></section></div>
+    <div class="page" id="page-staf"><section class="section"><div class="section-header"><div class="section-eyebrow">Data Master</div><h2 class="section-title">Data Staf</h2><p class="section-sub">Kelola data induk staf administrasi</p></div><div id="staf-content"></div></section></div>
+    <div class="page" id="page-matkul"><section class="section"><div class="section-header"><div class="section-eyebrow">Data Master</div><h2 class="section-title">Mata Kuliah</h2><p class="section-sub">Kelola kurikulum mata kuliah beserta bobot SKS</p></div><div id="matkul-content"></div></section></div>
+    <div class="page" id="page-kelas"><section class="section"><div class="section-header"><div class="section-eyebrow">Data Master</div><h2 class="section-title">Kelas / Rombongan Belajar</h2><p class="section-sub">Kelola kelas dan dosen wali</p></div><div id="kelas-content"></div></section></div>
+    <div class="page" id="page-ruangan"><section class="section"><div class="section-header"><div class="section-eyebrow">Data Master</div><h2 class="section-title">Ruangan</h2><p class="section-sub">Kelola ruang kuliah dan laboratorium</p></div><div id="ruangan-content"></div></section></div>
+    <div class="page" id="page-keuangan"><section class="section"><div id="keuangan-content"></div></section></div>
+    <div class="page" id="page-tahunakademik"><section class="section"><div class="section-header"><div class="section-eyebrow">Administrasi</div><h2 class="section-title">Tahun Akademik</h2><p class="section-sub">Kelola periode tahun akademik dan tentukan periode aktif</p></div><div id="tahunakademik-content"></div></section></div>
+    <div class="page" id="page-profil"><section class="section"><div id="profil-content"></div></section></div>
+    <div class="page" id="page-pengaturan"><section class="section"><div class="section-header"><div class="section-eyebrow">Sistem</div><h2 class="section-title">Pengaturan</h2><p class="section-sub">Penyimpanan data, identitas institusi & cadangan data</p></div><div id="pengaturan-content"></div></section></div>
+
+  </div>
+</div>
+</div>
+
+<!-- ============ MODAL HOST ============ -->
+<div id="modal-host"></div>
+
+<script src="data/config.js"></script>
+<script src="js/core.js"></script>
+<script src="js/master.js"></script>
+<script src="js/akademik.js"></script>
+<script src="js/kampus.js"></script>
+</body>
+</html>
