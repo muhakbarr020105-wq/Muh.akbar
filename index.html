@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FirastikaShop — Skincare & Makeup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ===== LOGIN ===== -->
+  <div id="loginScreen" class="login-screen">
+    <form id="loginForm" class="login-card">
+      <div class="login-logo">💄</div>
+      <h1 class="login-title">FirastikaShop</h1>
+      <p class="login-sub">Skincare &amp; Makeup Store</p>
+      <label>Username<input type="text" id="loginUser" class="input" autocomplete="username" required /></label>
+      <label>Password<input type="password" id="loginPass" class="input" autocomplete="current-password" required /></label>
+      <div id="loginError" class="login-error"></div>
+      <button type="submit" class="btn-primary full">Masuk</button>
+      <p class="login-hint">Demo: <strong>admin</strong> / <strong>admin123</strong></p>
+    </form>
+  </div>
+
+  <!-- ===== APP ===== -->
+  <div id="app" class="app hidden">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <span class="brand-logo">💄</span>
+        <div><div class="brand-name">FirastikaShop</div><div class="brand-tag">Skincare &amp; Makeup</div></div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboard"><span>📊</span> Dashboard</button>
+        <button class="nav-item" data-view="produk"><span>🛒</span> Produk &amp; Stok</button>
+        <button class="nav-item" data-view="penjualan"><span>💰</span> Penjualan</button>
+        <button class="nav-item" data-view="pengeluaran"><span>💸</span> Pengeluaran</button>
+        <button class="nav-item" data-view="riwayat"><span>🧾</span> Riwayat</button>
+        <button class="nav-item" data-view="laporan"><span>📈</span> Laporan</button>
+        <button class="nav-item" data-view="pengaturan"><span>⚙️</span> Pengaturan</button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="mode-pill" id="modePill">Mode: —</div>
+        <button class="btn-ghost full" id="logoutBtn">Keluar</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="topbar">
+        <button class="hamburger" id="hamburger">☰</button>
+        <h2 id="pageTitle">Dashboard</h2>
+        <div class="top-actions">
+          <button class="icon-btn" id="themeToggle" title="Ganti tema">🌙</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- DASHBOARD -->
+        <section class="view" id="view-dashboard">
+          <div class="stats">
+            <div class="stat-card pink"><div class="stat-label">Total Pemasukan</div><div class="stat-val" id="statIncome">Rp0</div></div>
+            <div class="stat-card plum"><div class="stat-label">Total Pengeluaran</div><div class="stat-val" id="statExpense">Rp0</div></div>
+            <div class="stat-card green"><div class="stat-label">Laba Bersih</div><div class="stat-val" id="statProfit">Rp0</div></div>
+            <div class="stat-card gold"><div class="stat-label">Nilai Stok</div><div class="stat-val" id="statStock">Rp0</div></div>
+          </div>
+          <div class="two-col">
+            <div class="card">
+              <div class="card-head"><h3>Arus Kas 6 Bulan</h3></div>
+              <canvas id="barChart" height="240"></canvas>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Stok Menipis</h3></div>
+              <div id="lowStockList" class="mini-list"></div>
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="card">
+              <div class="card-head"><h3>Produk Terlaris</h3></div>
+              <div id="topProductList" class="mini-list"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Transaksi Terbaru</h3></div>
+              <div id="recentList" class="mini-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PRODUK -->
+        <section class="view" id="view-produk">
+          <div class="toolbar">
+            <input type="text" id="searchProduk" class="input" placeholder="🔍 Cari produk / brand..." />
+            <select id="filterKategori" class="input"><option value="">Semua Kategori</option></select>
+            <button class="btn-primary" id="addProdukBtn">+ Produk</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap"><table class="tbl">
+              <thead><tr><th>Produk</th><th>Kategori</th><th>Brand</th><th class="right">Beli</th><th class="right">Jual</th><th class="right">Stok</th><th></th></tr></thead>
+              <tbody id="produkBody"></tbody>
+            </table></div>
+          </div>
+        </section>
+
+        <!-- PENJUALAN -->
+        <section class="view" id="view-penjualan">
+          <div class="two-col">
+            <div class="card form-card">
+              <div class="card-head"><h3>Catat Penjualan (Keranjang)</h3></div>
+              <form id="cartAddForm" class="form">
+                <label>Produk<select id="saleProduk" class="input" required></select></label>
+                <div class="form-2">
+                  <label>Jumlah<input type="number" id="saleQty" class="input" min="1" value="1" required /></label>
+                  <label>Harga Jual / item<input type="number" id="salePrice" class="input" min="0" required /></label>
+                </div>
+                <div class="total-preview">Subtotal item: <strong id="saleSub">Rp0</strong> <span id="saleStockInfo" class="muted"></span></div>
+                <button type="submit" class="btn-ghost full">+ Tambah ke Keranjang</button>
+              </form>
+              <div class="cart-box">
+                <div class="card-head" style="margin:14px 0 8px"><h3 style="font-size:15px">Keranjang</h3><span class="badge rose" id="cartCount">0</span></div>
+                <div class="table-wrap"><table class="tbl cart-tbl">
+                  <thead><tr><th>Produk</th><th class="right">Qty</th><th class="right">Harga</th><th class="right">Subtotal</th><th></th></tr></thead>
+                  <tbody id="cartBody"></tbody>
+                </table></div>
+                <form id="saleForm" class="form" style="margin-top:12px">
+                  <div class="form-2">
+                    <label>Nama Customer (opsional)<input type="text" id="saleCustomer" class="input" placeholder="mis. Sari" /></label>
+                    <label>Tanggal<input type="date" id="saleDate" class="input" required /></label>
+                  </div>
+                  <div class="total-preview grand">Total Pesanan: <strong id="saleTotal">Rp0</strong></div>
+                  <button type="submit" class="btn-primary full" id="saveOrderBtn">Simpan Pesanan</button>
+                </form>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Pemasukan Lain</h3></div>
+              <form id="incomeForm" class="form">
+                <label>Keterangan<input type="text" id="incDesc" class="input" placeholder="mis. Jasa makeup wedding" required /></label>
+                <div class="form-2">
+                  <label>Nominal<input type="number" id="incAmount" class="input" min="0" required /></label>
+                  <label>Tanggal<input type="date" id="incDate" class="input" required /></label>
+                </div>
+                <button type="submit" class="btn-primary full">Simpan Pemasukan</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- PENGELUARAN -->
+        <section class="view" id="view-pengeluaran">
+          <div class="two-col">
+            <div class="card form-card">
+              <div class="card-head"><h3>Restock Produk (menambah stok)</h3></div>
+              <form id="restockForm" class="form">
+                <label>Produk<select id="reProduk" class="input" required></select></label>
+                <div class="form-2">
+                  <label>Jumlah<input type="number" id="reQty" class="input" min="1" value="1" required /></label>
+                  <label>Harga Beli / item<input type="number" id="rePrice" class="input" min="0" required /></label>
+                </div>
+                <label>Tanggal<input type="date" id="reDate" class="input" required /></label>
+                <div class="total-preview">Total: <strong id="reTotal">Rp0</strong></div>
+                <button type="submit" class="btn-primary full">Simpan Restock</button>
+              </form>
+            </div>
+            <div class="card form-card">
+              <div class="card-head"><h3>Pengeluaran Operasional</h3></div>
+              <form id="expenseForm" class="form">
+                <label>Keterangan<input type="text" id="expDesc" class="input" placeholder="mis. Bayar listrik" required /></label>
+                <div class="form-2">
+                  <label>Kategori<select id="expCat" class="input"></select></label>
+                  <label>Nominal<input type="number" id="expAmount" class="input" min="0" required /></label>
+                </div>
+                <label>Tanggal<input type="date" id="expDate" class="input" required /></label>
+                <button type="submit" class="btn-primary full">Simpan Pengeluaran</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- RIWAYAT -->
+        <section class="view" id="view-riwayat">
+          <div class="toolbar">
+            <select id="filterTipe" class="input"><option value="">Semua Tipe</option><option value="pemasukan">Pemasukan</option><option value="pengeluaran">Pengeluaran</option></select>
+            <input type="month" id="filterBulan" class="input" />
+            <button class="btn-ghost" id="exportCsvBtn">⬇️ Ekspor CSV</button>
+          </div>
+          <div class="card">
+            <div class="table-wrap"><table class="tbl">
+              <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Tipe</th><th class="right">Nominal</th><th></th></tr></thead>
+              <tbody id="riwayatBody"></tbody>
+            </table></div>
+          </div>
+        </section>
+
+        <!-- LAPORAN -->
+        <section class="view" id="view-laporan">
+          <div class="card">
+            <div class="card-head"><h3>Rekap Bulanan</h3></div>
+            <div class="table-wrap"><table class="tbl">
+              <thead><tr><th>Bulan</th><th class="right">Pemasukan</th><th class="right">Pengeluaran</th><th class="right">Laba</th></tr></thead>
+              <tbody id="rekapBulananBody"></tbody>
+            </table></div>
+          </div>
+          <div class="two-col">
+            <div class="card">
+              <div class="card-head"><h3>Penjualan per Kategori</h3></div>
+              <div id="rekapKategori" class="mini-list"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Ringkasan</h3></div>
+              <div id="laporanRingkasan" class="mini-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PENGATURAN -->
+        <section class="view" id="view-pengaturan">
+          <div class="card form-card">
+            <div class="card-head"><h3>Mode Penyimpanan</h3></div>
+            <p class="muted">Pilih tempat data disimpan. <strong>Lokal</strong> = di browser ini. <strong>Cloud</strong> = di Google Spreadsheet (perlu URL Apps Script).</p>
+            <div class="seg" id="modeSeg">
+              <button class="seg-btn" data-mode="local">💾 Lokal</button>
+              <button class="seg-btn" data-mode="cloud">☁️ Cloud (Spreadsheet)</button>
+            </div>
+            <label style="margin-top:14px">URL Web App Apps Script
+              <input type="text" id="setUrl" class="input" placeholder="https://script.google.com/macros/s/XXXX/exec" />
+            </label>
+            <button class="btn-primary" id="saveUrlBtn">Simpan URL &amp; Muat Ulang</button>
+          </div>
+          <div class="card form-card">
+            <div class="card-head"><h3>Cadangan Data</h3></div>
+            <div class="btn-row">
+              <button class="btn-ghost" id="exportJsonBtn">⬇️ Ekspor JSON</button>
+              <button class="btn-ghost" id="importJsonBtn">⬆️ Impor JSON</button>
+              <button class="btn-danger" id="resetBtn">♻️ Reset ke Data Contoh</button>
+            </div>
+            <input type="file" id="importFile" accept="application/json" hidden />
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Produk -->
+  <div class="modal" id="produkModal">
+    <div class="modal-card">
+      <div class="card-head"><h3 id="produkModalTitle">Tambah Produk</h3><button class="icon-btn" id="closeModal">✕</button></div>
+      <form id="produkForm" class="form">
+        <input type="hidden" id="produkId" />
+        <label>Nama Produk<input type="text" id="pNama" class="input" required /></label>
+        <div class="form-2">
+          <label>Kategori<select id="pKategori" class="input"></select></label>
+          <label>Brand<input type="text" id="pBrand" class="input" /></label>
+        </div>
+        <div class="form-2">
+          <label>Harga Beli<input type="number" id="pBeli" class="input" min="0" required /></label>
+          <label>Harga Jual<input type="number" id="pJual" class="input" min="0" required /></label>
+        </div>
+        <div class="form-2">
+          <label>Stok<input type="number" id="pStok" class="input" min="0" required /></label>
+          <label>Stok Minimum<input type="number" id="pMin" class="input" min="0" value="5" /></label>
+        </div>
+        <button type="submit" class="btn-primary full">Simpan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loader & Toast -->
+  <div class="loader" id="loader"><div class="spinner"></div></div>
+  <div class="toast" id="toast"></div>
+
+  <script src="data/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
