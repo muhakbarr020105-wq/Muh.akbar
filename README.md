@@ -1,85 +1,103 @@
-# 💄 FirastikaShop — Manajemen Toko Skincare & Makeup
+# 🎓 AkademikAP — Portal Akademik Administrasi Perkantoran (Professional Edition)
 
-Aplikasi web untuk mengelola **pemasukan, pengeluaran, dan stok barang** toko skincare & makeup.
-Dapat berjalan **tanpa server** (Mode Lokal) atau **dengan Google Spreadsheet sebagai database** (Mode Cloud).
+Portal akademik untuk **Program Studi Administrasi Perkantoran — Politeknik Negeri Ujung Pandang (PNUP)**.
+Mengelola data mahasiswa, dosen, staf, mata kuliah, input nilai, serta perhitungan **IPS & IPK berbobot SKS** lengkap dengan **Kartu Hasil Studi (KHS)**.
 
-## ⚡ Cara Tercepat (langsung tampil rapi)
+---
 
-Klik dua kali **`FirastikaShop-1File.html`** — ini versi satu file yang sudah berisi seluruh CSS + JavaScript + data di dalamnya, jadi pasti tampil rapi walau folder lain tidak ikut. Cocok dipakai langsung di komputer/HP tanpa setup.
+## ✨ Yang Baru di Edisi Profesional
 
-## 📁 Susunan File
+- **Desain profesional baru** — tampilan institusional yang bersih, tema **Terang & Gelap**, responsif penuh (desktop & mobile).
+- **Berfungsi tanpa server (Mode Lokal)** — data tersimpan otomatis di browser (localStorage) dengan **data contoh** siap pakai. Tidak ada error koneksi.
+- **Layar Login** — akun demo `admin` / `admin123`.
+- **Edit Nilai** langsung dari tabel (sebelumnya hanya tambah/hapus).
+- **IPK & IPS berbobot SKS** — rumus akademik resmi: `Σ(bobot × SKS) / Σ(SKS)`.
+- **Grafik distribusi nilai** & **peringkat IPK** di dashboard.
+- **Cetak KHS** (print) dan **Ekspor CSV** nilai.
+- **Cadangan data** — ekspor/impor JSON & reset ke data contoh.
+- **Halaman Pengaturan** — atur mode penyimpanan, URL Apps Script, dan identitas institusi.
+- **Sinkronisasi Cloud opsional** ke Google Sheets via Apps Script.
 
+---
+
+## 🚀 Cara Menjalankan (Mode Lokal — paling mudah)
+
+1. Ekstrak folder ini.
+2. Buka **`index.html`** di browser (klik dua kali atau seret ke browser).
+3. Login dengan **`admin` / `admin123`**.
+4. Selesai — aplikasi langsung berisi data contoh dan dapat dipakai sepenuhnya.
+
+> Semua perubahan otomatis tersimpan di perangkat Anda. Untuk memulai dari kosong, buka **Pengaturan → Reset Data** atau impor file cadangan Anda sendiri.
+
+Untuk pengalaman terbaik, jalankan melalui server lokal sederhana (opsional):
+```bash
+cd akademikap
+python3 -m http.server 8080
+# lalu buka http://localhost:8080
 ```
-firastikashop/
-├── FirastikaShop-1File.html  ← versi satu file (klik dua kali, langsung jalan)
-├── index.html               ← versi modular (memakai file di css/ js/ data/)
-├── css/
-│   └── style.css            ← tampilan (tema skincare, mode terang & gelap)
-├── js/
-│   └── app.js               ← logika aplikasi (engine lokal + sinkron cloud)
-├── data/
-│   └── config.js            ← pengaturan: mode, URL, akun, & data contoh
-├── apps-script.js           ← backend Google Apps Script (untuk Mode Cloud)
-└── README.md                ← panduan ini
-```
 
-> Catatan: `index.html` dan `FirastikaShop-1File.html` adalah aplikasi yang sama. Bedanya, `index.html` memuat file dari subfolder `css/`, `js/`, `data/` — jadi seluruh folder harus diekstrak utuh. Jika tampil polos tanpa gaya saat dibuka, gunakan `FirastikaShop-1File.html`.
+---
 
-## 🔐 Login
-
-Akun demo (ubah di `data/config.js` bagian `AUTH`):
-
-- Username: **admin**
-- Password: **admin123**
-
-## 🚀 Cara Menjalankan
-
-1. Cara mudah: buka **`FirastikaShop-1File.html`** (klik dua kali).
-   Atau buka `index.html` bila seluruh folder sudah diekstrak utuh.
-2. Login dengan akun di atas.
-3. Secara default aplikasi memakai **Mode Lokal** (data tersimpan di browser) bila URL cloud belum diisi — jadi langsung bisa dipakai.
-
-## ☁️ Mengaktifkan Mode Cloud (Google Spreadsheet sebagai Database)
+## ☁️ Mode Cloud (opsional — sinkron ke Google Sheets)
 
 1. Buat **Google Spreadsheet** baru.
-2. Menu **Extensions → Apps Script**, hapus kode bawaan, lalu **tempel seluruh isi `apps-script.js`**.
-3. Jalankan fungsi **`setup()`** satu kali (pilih `setup` di dropdown lalu klik ▶ Run). Ini membuat sheet **Produk** dan **Transaksi**.
-4. **Deploy → New deployment → Web app**:
-   - *Execute as*: **Me**
-   - *Who has access*: **Anyone**
-5. Salin **URL Web App** (diakhiri `/exec`).
-6. Buka aplikasi → menu **Pengaturan** → pilih **☁️ Cloud**, tempel URL, klik **Simpan URL & Muat Ulang**.
-   - (Opsional) bisa juga langsung isi `APPS_SCRIPT_URL` di `data/config.js`.
-   - Untuk versi satu file, isi URL lewat menu Pengaturan di dalam aplikasi.
+2. **Extensions → Apps Script**, tempel seluruh isi `apps-script.js`.
+3. Jalankan fungsi **`setup()`** sekali (membuat semua sheet otomatis).
+4. **Deploy → New deployment → Web app** — *Execute as: Me*, *Who has access: Anyone*.
+5. Salin URL Web App (diakhiri `/exec`).
+6. Tempel URL di **`data/config.js`** (`APPS_SCRIPT_URL`) **atau** lewat menu **Pengaturan**, lalu aktifkan **Mode Cloud**.
 
-Setelah aktif, seluruh produk & transaksi otomatis tersimpan ke Google Sheet.
+---
 
-## ✨ Fitur
+## 📐 Skema Penilaian
 
-- **Dashboard** — total pemasukan, pengeluaran, laba bersih, nilai stok, grafik arus kas 6 bulan, stok menipis, produk terlaris, transaksi terbaru.
-- **Produk & Stok** — tambah/edit/hapus produk, kategori, brand, harga beli/jual, stok minimum, peringatan stok menipis.
-- **Penjualan** — **keranjang multi-item**: pelanggan memesan banyak barang sekaligus dalam satu pesanan; stok otomatis berkurang. Plus input pemasukan lain.
-- **Pengeluaran** — restock produk (menambah stok) & pengeluaran operasional berkategori.
-- **Riwayat** — daftar transaksi, filter tipe & bulan, ekspor **CSV**.
-- **Laporan** — rekap bulanan, penjualan per kategori, ringkasan.
-- **Pengaturan** — ganti mode penyimpanan, URL Apps Script, ekspor/impor JSON, reset data.
-- **Tema** terang & gelap.
+**Skor akhir** dihitung dari bobot komponen lalu dinormalisasi ke skala 0–100:
 
-## 🗂️ Struktur Data (kolom Sheet)
+| Komponen | Bobot |
+|----------|-------|
+| Tugas    | 20%   |
+| Praktik  | 50%   |
+| UTS      | 25%   |
+| UAS      | 35%   |
+| Absen    | 5%    |
 
-**Produk**: `ID, Nama, Kategori, Brand, Harga Beli, Harga Jual, Stok, Stok Minimum, Tanggal Dibuat`
+`Skor Mentah = (Tugas×0.20)+(Praktik×0.50)+(UTS×0.25)+(UAS×0.35)+(Absen×0.05)`
+`Skor Akhir = Skor Mentah / 1.35`
 
-**Transaksi**: `ID, Tipe, Kategori, Tanggal, Keterangan, Jumlah, Produk ID, Qty, Order ID`
+**Konversi nilai huruf & bobot IP:**
 
-> Penjualan keranjang menyimpan satu baris transaksi per item dengan `Order ID` yang sama, sehingga satu pesanan berisi banyak barang tetap terlacak.
+| Skor | Huruf | Bobot |
+|------|-------|-------|
+| ≥ 85 | A  | 4.0 |
+| ≥ 80 | B+ | 3.5 |
+| ≥ 75 | B  | 3.0 |
+| ≥ 70 | C+ | 2.5 |
+| ≥ 60 | C  | 2.0 |
+| ≥ 50 | D  | 1.0 |
+| < 50 | E  | 0.0 |
 
-## 💾 Mode Lokal vs Cloud
+**IPS / IPK** dihitung berbobot SKS: `Σ(Bobot IP × SKS) / Σ(SKS)`.
 
-| | Mode Lokal | Mode Cloud |
-|---|---|---|
-| Penyimpanan | Browser (localStorage) | Google Spreadsheet |
-| Perlu internet | Tidak | Ya |
-| Perlu setup | Tidak | Apps Script + URL |
-| Multi-perangkat | Tidak | Ya |
+---
 
-Kedua mode memakai antarmuka & fitur yang sama. Anda bisa berpindah kapan saja lewat menu **Pengaturan**.
+## 📁 Struktur Proyek
+
+```
+akademikap/
+├─ index.html        — struktur halaman (login, dashboard, data master, nilai, rapor, pengaturan)
+├─ css/style.css     — desain profesional (tema terang & gelap, responsif, gaya cetak)
+├─ js/app.js         — logika aplikasi (mesin data lokal + sinkron cloud, CRUD, IPK, grafik, ekspor)
+├─ data/config.js    — konfigurasi, akun login, dan data contoh (seed)
+├─ apps-script.js    — backend Google Apps Script (opsional, Mode Cloud)
+└─ README.md
+```
+
+---
+
+## 🔑 Akun Demo
+
+| Username | Password   |
+|----------|------------|
+| `admin`  | `admin123` |
+
+Ganti melalui objek `AUTH` di `data/config.js`.

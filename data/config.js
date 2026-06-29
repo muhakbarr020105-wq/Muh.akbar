@@ -1,58 +1,68 @@
 // ================================================
-//  KONFIGURASI FIRASTIKASHOP
-//  Manajemen Toko Skincare & Makeup
+//  KONFIGURASI AKADEMIKAP — Professional Edition
 // ------------------------------------------------
 //  STORAGE_MODE:
-//   "local" -> data disimpan di browser (localStorage).
-//              Aplikasi LANGSUNG berfungsi tanpa server.
-//   "cloud" -> data disinkronkan ke Google Spreadsheet
-//              lewat Google Apps Script. Isi APPS_SCRIPT_URL
-//              terlebih dahulu. Jika URL kosong, otomatis
-//              memakai data lokal sampai URL diisi.
-//  Mode juga bisa diubah dari menu Pengaturan.
+//   "local" → data disimpan di browser (localStorage).
+//             Aplikasi LANGSUNG berfungsi tanpa server.
+//   "cloud" → data disinkronkan ke Google Apps Script.
+//             Isi APPS_SCRIPT_URL terlebih dahulu, lalu
+//             ubah STORAGE_MODE menjadi "cloud".
+//  Mode dapat juga diubah langsung dari menu Pengaturan.
 // ================================================
 
 const STORAGE_MODE = "cloud"; // "local" atau "cloud"
 
-// Tempel URL Web App Apps Script di sini (diakhiri /exec)
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwXw-dIVCXaZX6W5-nJgm3TKOAgPtVF3tRzSqVcEFvy4sbgQKhTFFCNcCcKZC5YPVJV/exec"; // contoh: https://script.google.com/macros/s/XXXX/exec
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdOn8k4XCW6-dAjOjHmnIVzYhzobhXdyEtGPNW-DA9jS3Xi8iS0P3im-CLueKUK5BbXA/exec"; // Contoh: https://script.google.com/macros/s/XXXX/exec
 
-// Akun login demo. Ganti sesuai kebutuhan.
+// Akun login demo (mode lokal). Ganti sesuai kebutuhan.
 const AUTH = {
   username: "admin",
   password: "admin123",
-  displayName: "Admin Toko"
+  displayName: "Administrator"
 };
 
 const CONFIG = {
-  namaToko: "FirastikaShop",
-  tagline: "Skincare & Makeup Store",
-  mataUang: "Rp",
-  kategoriProduk: ["Skincare", "Makeup", "Body Care", "Haircare", "Parfum"],
-  kategoriPengeluaran: ["Restock", "Operasional", "Gaji", "Sewa", "Marketing", "Lainnya"]
+  namaInstitusi: "Politeknik Negeri Ujung Pandang",
+  namaProdi: "Administrasi Perkantoran",
+  namaPortal: "AkademikAP",
+  // Bobot komponen nilai. Skor mentah dibagi totalBobot agar ternormalisasi ke skala 0–100.
+  bobotNilai: { tugas: 0.20, praktik: 0.50, uts: 0.25, uas: 0.35, absen: 0.05 },
+  totalBobot: 1.35
 };
 
 // ================================================
-//  DATA AWAL (SEED) - dipakai pertama kali pada mode lokal
-//  agar aplikasi langsung berisi contoh data fungsional.
-//  Kunci objek = nama kolom pada Google Sheet.
+//  DATA AWAL (SEED) — dipakai pertama kali pada mode lokal
+//  agar portal langsung berisi contoh data yang fungsional.
 // ================================================
 const SEED_DATA = {
-  produk: [
-    { ID: "PRD-1", Nama: "Serum Vitamin C 20%",        Kategori: "Skincare", Brand: "GlowLab",   "Harga Beli": 45000,  "Harga Jual": 79000,  Stok: 24, "Stok Minimum": 5, "Tanggal Dibuat": "2024-01-05T00:00:00.000Z" },
-    { ID: "PRD-2", Nama: "Sunscreen SPF 50 PA++++",     Kategori: "Skincare", Brand: "GlowLab",   "Harga Beli": 38000,  "Harga Jual": 65000,  Stok: 30, "Stok Minimum": 6, "Tanggal Dibuat": "2024-01-05T00:00:00.000Z" },
-    { ID: "PRD-3", Nama: "Cushion Matte Natural",       Kategori: "Makeup",   Brand: "Belleza",   "Harga Beli": 52000,  "Harga Jual": 95000,  Stok: 18, "Stok Minimum": 4, "Tanggal Dibuat": "2024-01-06T00:00:00.000Z" },
-    { ID: "PRD-4", Nama: "Lip Cream Velvet 04",         Kategori: "Makeup",   Brand: "Belleza",   "Harga Beli": 23000,  "Harga Jual": 45000,  Stok: 40, "Stok Minimum": 8, "Tanggal Dibuat": "2024-01-06T00:00:00.000Z" },
-    { ID: "PRD-5", Nama: "Micellar Water 250ml",        Kategori: "Skincare", Brand: "PureSkin",  "Harga Beli": 28000,  "Harga Jual": 49000,  Stok: 3,  "Stok Minimum": 6, "Tanggal Dibuat": "2024-01-07T00:00:00.000Z" },
-    { ID: "PRD-6", Nama: "Body Lotion Vanilla",         Kategori: "Body Care",Brand: "PureSkin",  "Harga Beli": 21000,  "Harga Jual": 39000,  Stok: 26, "Stok Minimum": 5, "Tanggal Dibuat": "2024-01-07T00:00:00.000Z" },
-    { ID: "PRD-7", Nama: "Hair Serum Argan Oil",        Kategori: "Haircare", Brand: "Lumiere",   "Harga Beli": 33000,  "Harga Jual": 59000,  Stok: 14, "Stok Minimum": 4, "Tanggal Dibuat": "2024-01-08T00:00:00.000Z" },
-    { ID: "PRD-8", Nama: "Eau de Parfum Rose 50ml",     Kategori: "Parfum",   Brand: "Lumiere",   "Harga Beli": 75000,  "Harga Jual": 135000, Stok: 9,  "Stok Minimum": 3, "Tanggal Dibuat": "2024-01-08T00:00:00.000Z" }
+  mahasiswa: [
+    { ID: "MHS-1", NIM: "322210001", Nama: "Andi Pratama",        Angkatan: "2022", "Jenis Kelamin": "L", Status: "Aktif", Email: "andi@student.pnup.ac.id",  "Tanggal Daftar": "2022-08-01T00:00:00.000Z" },
+    { ID: "MHS-2", NIM: "322210002", Nama: "Siti Nurhaliza",       Angkatan: "2022", "Jenis Kelamin": "P", Status: "Aktif", Email: "siti@student.pnup.ac.id",  "Tanggal Daftar": "2022-08-01T00:00:00.000Z" },
+    { ID: "MHS-3", NIM: "322210003", Nama: "Muhammad Rizki",        Angkatan: "2022", "Jenis Kelamin": "L", Status: "Aktif", Email: "rizki@student.pnup.ac.id", "Tanggal Daftar": "2022-08-01T00:00:00.000Z" },
+    { ID: "MHS-4", NIM: "322210004", Nama: "Dewi Lestari",          Angkatan: "2022", "Jenis Kelamin": "P", Status: "Aktif", Email: "dewi@student.pnup.ac.id",  "Tanggal Daftar": "2022-08-01T00:00:00.000Z" },
+    { ID: "MHS-5", NIM: "322210005", Nama: "Ahmad Fauzan",          Angkatan: "2022", "Jenis Kelamin": "L", Status: "Aktif", Email: "fauzan@student.pnup.ac.id","Tanggal Daftar": "2022-08-01T00:00:00.000Z" }
   ],
-  transaksi: [
-    { ID: "TRX-1", Tipe: "pemasukan",   Kategori: "Penjualan",  Tanggal: "2024-02-02", Keterangan: "[Order #A1B2C3 \u2014 Sari] Serum Vitamin C 20%", Jumlah: 158000, "Produk ID": "PRD-1", Qty: 2, "Order ID": "A1B2C3" },
-    { ID: "TRX-2", Tipe: "pemasukan",   Kategori: "Penjualan",  Tanggal: "2024-02-02", Keterangan: "[Order #A1B2C3 \u2014 Sari] Lip Cream Velvet 04",   Jumlah: 45000,  "Produk ID": "PRD-4", Qty: 1, "Order ID": "A1B2C3" },
-    { ID: "TRX-3", Tipe: "pengeluaran", Kategori: "Restock",    Tanggal: "2024-02-03", Keterangan: "Restock Cushion Matte Natural",                  Jumlah: 520000, "Produk ID": "PRD-3", Qty: 10, "Order ID": "" },
-    { ID: "TRX-4", Tipe: "pengeluaran", Kategori: "Operasional",Tanggal: "2024-02-05", Keterangan: "Biaya kemasan & paper bag",                      Jumlah: 85000,  "Produk ID": "",    Qty: 0,  "Order ID": "" },
-    { ID: "TRX-5", Tipe: "pemasukan",   Kategori: "Penjualan",  Tanggal: "2024-02-06", Keterangan: "[Order #D4E5F6] Sunscreen SPF 50 PA++++",        Jumlah: 130000, "Produk ID": "PRD-2", Qty: 2, "Order ID": "D4E5F6" }
+  dosen: [
+    { ID: "DSN-1", NIDN: "0901018801", Nama: "Dr. Hasanuddin, M.M.",     Jabatan: "Lektor Kepala", Email: "hasanuddin@pnup.ac.id", "Tanggal Daftar": "2021-01-01T00:00:00.000Z" },
+    { ID: "DSN-2", NIDN: "0912029002", Nama: "Rahmawati, S.E., M.Si.",   Jabatan: "Lektor",        Email: "rahmawati@pnup.ac.id",  "Tanggal Daftar": "2021-01-01T00:00:00.000Z" },
+    { ID: "DSN-3", NIDN: "0903038503", Nama: "Bambang Sucipto, M.Kom.",  Jabatan: "Asisten Ahli",  Email: "bambang@pnup.ac.id",    "Tanggal Daftar": "2021-01-01T00:00:00.000Z" }
+  ],
+  staf: [
+    { ID: "STF-1", NIP: "19850110", Nama: "Hartono",      Jabatan: "Staf Akademik",      "Tanggal Daftar": "2021-01-01T00:00:00.000Z" },
+    { ID: "STF-2", NIP: "19900215", Nama: "Nur Aisyah",   Jabatan: "Staf Administrasi",   "Tanggal Daftar": "2021-01-01T00:00:00.000Z" }
+  ],
+  mataKuliah: [
+    { ID: "MK-1", Kode: "AP101", "Nama Mata Kuliah": "Pengantar Administrasi Perkantoran", Semester: "1", SKS: 3, "Dosen Pengampu": "Dr. Hasanuddin, M.M.",   "Tanggal Dibuat": "2022-08-01T00:00:00.000Z" },
+    { ID: "MK-2", Kode: "AP102", "Nama Mata Kuliah": "Korespondensi Bisnis",              Semester: "1", SKS: 2, "Dosen Pengampu": "Rahmawati, S.E., M.Si.", "Tanggal Dibuat": "2022-08-01T00:00:00.000Z" },
+    { ID: "MK-3", Kode: "AP201", "Nama Mata Kuliah": "Manajemen Kearsipan",               Semester: "2", SKS: 3, "Dosen Pengampu": "Dr. Hasanuddin, M.M.",   "Tanggal Dibuat": "2022-08-01T00:00:00.000Z" },
+    { ID: "MK-4", Kode: "AP202", "Nama Mata Kuliah": "Aplikasi Komputer Perkantoran",     Semester: "2", SKS: 3, "Dosen Pengampu": "Bambang Sucipto, M.Kom.","Tanggal Dibuat": "2022-08-01T00:00:00.000Z" }
+  ],
+  nilai: [
+    { ID: "NL-1", "NIM Mahasiswa": "322210001", "Nama Mahasiswa": "Andi Pratama",  "Kode MK": "AP101", "Nama Mata Kuliah": "Pengantar Administrasi Perkantoran", Semester: "1", SKS: 3, Tugas: 85, Praktik: 88, UTS: 80, UAS: 90, Absen: 95, "Skor Mentah": 0, "Skor Normalisasi": 0, "Nilai Huruf": "", "Bobot IP": 0, "Tanggal Input": "2023-01-10T00:00:00.000Z" },
+    { ID: "NL-2", "NIM Mahasiswa": "322210001", "Nama Mahasiswa": "Andi Pratama",  "Kode MK": "AP102", "Nama Mata Kuliah": "Korespondensi Bisnis", Semester: "1", SKS: 2, Tugas: 78, Praktik: 82, UTS: 75, UAS: 80, Absen: 90, "Skor Mentah": 0, "Skor Normalisasi": 0, "Nilai Huruf": "", "Bobot IP": 0, "Tanggal Input": "2023-01-11T00:00:00.000Z" },
+    { ID: "NL-3", "NIM Mahasiswa": "322210001", "Nama Mahasiswa": "Andi Pratama",  "Kode MK": "AP201", "Nama Mata Kuliah": "Manajemen Kearsipan", Semester: "2", SKS: 3, Tugas: 90, Praktik: 92, UTS: 88, UAS: 91, Absen: 100, "Skor Mentah": 0, "Skor Normalisasi": 0, "Nilai Huruf": "", "Bobot IP": 0, "Tanggal Input": "2023-07-10T00:00:00.000Z" },
+    { ID: "NL-4", "NIM Mahasiswa": "322210002", "Nama Mahasiswa": "Siti Nurhaliza", "Kode MK": "AP101", "Nama Mata Kuliah": "Pengantar Administrasi Perkantoran", Semester: "1", SKS: 3, Tugas: 92, Praktik: 95, UTS: 90, UAS: 93, Absen: 100, "Skor Mentah": 0, "Skor Normalisasi": 0, "Nilai Huruf": "", "Bobot IP": 0, "Tanggal Input": "2023-01-10T00:00:00.000Z" },
+    { ID: "NL-5", "NIM Mahasiswa": "322210002", "Nama Mahasiswa": "Siti Nurhaliza", "Kode MK": "AP202", "Nama Mata Kuliah": "Aplikasi Komputer Perkantoran", Semester: "2", SKS: 3, Tugas: 80, Praktik: 85, UTS: 78, UAS: 82, Absen: 95, "Skor Mentah": 0, "Skor Normalisasi": 0, "Nilai Huruf": "", "Bobot IP": 0, "Tanggal Input": "2023-07-12T00:00:00.000Z" },
+    { ID: "NL-6", "NIM Mahasiswa": "322210003", "Nama Mahasiswa": "Muhammad Rizki", "Kode MK": "AP101", "Nama Mata Kuliah": "Pengantar Administrasi Perkantoran", Semester: "1", SKS: 3, Tugas: 70, Praktik: 72, UTS: 65, UAS: 68, Absen: 80, "Skor Mentah": 0, "Skor Normalisasi": 0, "Nilai Huruf": "", "Bobot IP": 0, "Tanggal Input": "2023-01-13T00:00:00.000Z" }
   ]
 };
